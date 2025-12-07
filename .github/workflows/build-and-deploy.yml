@@ -69,7 +69,7 @@ jobs:
       - name: Publish build info
         run: jfrog rt build-publish ${{ vars.BUILD_NAME }} ${{ github.run_number }} --project ds
 
-      - name: Sign build evidence
+      - name: Sign build evidence1
         run: |
           echo '{ "actor": "${{ github.actor }}", "date": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'" }' > sign.json
           jf evd create --build-name ${{ vars.BUILD_NAME }} --build-number ${{ github.run_number }} \
