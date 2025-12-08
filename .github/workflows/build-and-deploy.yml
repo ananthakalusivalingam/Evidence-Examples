@@ -35,7 +35,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           install: true
 
-      - name: Build Docker image
+      - name: Build Docker image-test and push to Artifactory with evidence
         run: |
           URL=$(echo ${{ vars.ARTIFACTORY_URL }} | sed 's|^https://||')
           REPO_URL=${URL}'/ds-docker-dev-virtual'
