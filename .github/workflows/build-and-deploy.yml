@@ -38,7 +38,7 @@ jobs:
       - name: Build Docker image
         run: |
           URL=$(echo ${{ vars.ARTIFACTORY_URL }} | sed 's|^https://||')
-          REPO_URL=${URL}'/ds-go'
+          REPO_URL=${URL}'/ds-docker-dev-virtual'
           docker build --build-arg REPO_URL=${REPO_URL} -f Dockerfile . \
           --tag ${REPO_URL}/ds:${{ github.run_number }} \
           --output=type=image --platform linux/amd64 --metadata-file=build-metadata --push
@@ -47,7 +47,7 @@ jobs:
       - name: Evidence on docker
         run: |
           echo '{ "actor": "${{ github.actor }}", "date": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'" }' > sign.json
-          jf evd create --package-name example-project-app --package-version ${{ github.run_number }} --package-repo-name ds-go-local \
+          jf evd create --package-name example-project-app --package-version ${{ github.run_number }} --package-repo-name ds-docker-dev-local \
             --key "${{ secrets.PRIVATE_KEY }}"  --key-alias KEY-ALIAS \
             --predicate ./sign.json --predicate-type https://jfrog.com/evidence/signature/v1 
           echo '🔎 Evidence attached: `signature` 🔏 ' 
