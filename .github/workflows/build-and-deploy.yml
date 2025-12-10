@@ -45,7 +45,6 @@ jobs:
           
           jf rt build-docker-create \
             ds-docker-dev-local \
-            --image ds:${{ github.run_number }} \
             --image-file build-metadata \
             --build-name ${{ vars.BUILD_NAME }} \
             --build-number ${{ github.run_number }} \
