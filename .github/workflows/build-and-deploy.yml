@@ -60,6 +60,7 @@ jobs:
 #            --predicate ./sign.json --predicate-type https://jfrog.com/evidence/signature/v1
 #            --project ds
 
+
       - name: Collecting Information from Git
         run: jf rt build-add-git ${{ vars.BUILD_NAME }} ${{ github.run_number }} --project ds
 
@@ -68,14 +69,13 @@ jobs:
 
       - name: Publish build info
         run: jfrog rt build-publish ${{ vars.BUILD_NAME }} ${{ github.run_number }} --project ds
-
-      - name: Sign build evidence1
+      - name: Sign build evidence
         run: |
           echo '{ "actor": "${{ github.actor }}", "date": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'" }' > sign.json
-          jf evd create --build-name ${{ vars.BUILD_NAME }} --build-number ${{ github.run_number }} \
-            --predicate ./sign.json --predicate-type https://jfrog.com/evidence/build-signature/v1 \
-            --key "${{ secrets.PRIVATE_KEY }}"  --key-alias KEY-ALIAS --project ds
-          echo '🔎 Evidence attached: `build-signature` 🔏 ' >> $GITHUB_STEP_SUMMARY
+#          jf evd create --build-name ${{ vars.BUILD_NAME }} --build-number ${{ github.run_number }} \
+#            --predicate ./sign.json --predicate-type https://jfrog.com/evidence/build-signature/v1 \
+#            --key "${{ secrets.PRIVATE_KEY }}"  --key-alias KEY-ALIAS --project ds
+#          echo '🔎 Evidence attached: `build-signature` 🔏 ' >> $GITHUB_STEP_SUMMARY
 
       - name: Create release bundle
         run: |
@@ -108,10 +108,10 @@ jobs:
           echo '{ "actor": "${{ github.actor }}", "date": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'", "test": "CI test", "result": "success" }' > test_evidence.json
           JF_LINK=${{ vars.ARTIFACTORY_URL }}'/ui/artifactory/lifecycle/?bundleName='${{ vars.BUNDLE_NAME }}'&bundleToFlash='${{ vars.BUNDLE_NAME }}'&releaseBundleVersion='${{ github.run_number }}'&repositoryKey=release-bundles-v2&activeVersionTab=Version%20Timeline&activeKanbanTab=promotion'
           echo 'Test on Release bundle ['${{ vars.BUNDLE_NAME }}':'${{ github.run_number }}']('${JF_LINK}') success' >> $GITHUB_STEP_SUMMARY
-          jf evd create --release-bundle ${{ vars.BUNDLE_NAME }} --release-bundle-version ${{ github.run_number }} \
-            --predicate ./test_evidence.json --predicate-type https://jfrog.com/evidence/testing-results/v1 \
-            --key "${{ secrets.PRIVATE_KEY }}" --key-alias KEY-ALIAS --project ds
-          echo '🔎 Evidence attached: integration-test 🧪 ' >> $GITHUB_STEP_SUMMARY
+#          jf evd create --release-bundle ${{ vars.BUNDLE_NAME }} --release-bundle-version ${{ github.run_number }} \
+#            --predicate ./test_evidence.json --predicate-type https://jfrog.com/evidence/testing-results/v1 \
+#            --key "${{ secrets.PRIVATE_KEY }}" --key-alias KEY-ALIAS --project ds
+#          echo '🔎 Evidence attached: integration-test 🧪 ' >> $GITHUB_STEP_SUMMARY
 
 
   Policy-check-and-promote-to-prod:
@@ -149,10 +149,10 @@ jobs:
       - name: Promote to Production
         run: |
           if [ "${{ env.RESULT }}" == "true" ]; then
-            jf evd create --key "${{ secrets.PRIVATE_KEY }}" --key-alias KEY-ALIAS \
-              --release-bundle ${{ vars.BUNDLE_NAME }} --release-bundle-version ${{ github.run_number }} \
-              --predicate ./policy.json --predicate-type https://jfrog.com/evidence/approval/v1 --project ds
-            jf release-bundle-promote ${{ vars.BUNDLE_NAME }} ${{ github.run_number }} PROD --signing-key PGP-RSA-2048  --sync=true --project ds
+#            jf evd create --key "${{ secrets.PRIVATE_KEY }}" --key-alias KEY-ALIAS \
+#              --release-bundle ${{ vars.BUNDLE_NAME }} --release-bundle-version ${{ github.run_number }} \
+#              --predicate ./policy.json --predicate-type https://jfrog.com/evidence/approval/v1 --project ds
+#            jf release-bundle-promote ${{ vars.BUNDLE_NAME }} ${{ github.run_number }} PROD --signing-key PGP-RSA-2048  --sync=true --project ds
             echo "🚀 Succesfully promote to \`PROD\` environemnt" >> $GITHUB_STEP_SUMMARY
           else
             echo "Fail promotion policy check" >> $GITHUB_STEP_SUMMARY
